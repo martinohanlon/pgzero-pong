@@ -7,6 +7,7 @@ HEIGHT = 300
 BALLSPEED = 10
 PADDLESPEED = 5
 MAXBOUNCEANGLE = 75
+gamemode = 1
 
 def reset_game(angle):
 
@@ -44,16 +45,37 @@ def draw():
     pad1.draw()
     pad2.draw()
 
+def computer_move():
+    if ball.x_vel >= 0:
+    #If ball is moving away from paddle, center bat
+        if pad1.y < (HEIGHT/2):
+            pad1.y += 2
+        elif pad1.y > (HEIGHT/2):
+            pad1.y -= 2
+    #if ball is moving towards bat, track its movement.
+    elif ball.x_vel < 0:
+        if pad1.y < ball.y:
+            pad1.y += 3
+        else:
+            pad1.y -= 3
+
 def update():
+	global gamemode
 
     #move the paddles
-    if keyboard.q:
-        pad1.top -= PADDLESPEED
-    if keyboard.a:
-        pad1.top += PADDLESPEED
-    if keyboard.k:
+    if gamemode == 1:
+    #in 1-player mode, let the computer operate paddle 1
+        computer_move()
+    if gamemode == 2:
+    #in 2-player mode, let the player operate paddle 1
+        if keyboard.q and pad1.top > 0:
+            pad1.top -= PADDLESPEED
+        if keyboard.a and pad1.bottom < HEIGHT:
+            pad1.top += PADDLESPEED
+    #in all modes, let the player operate paddle 2
+    if keyboard.k and pad2.top > 0:
         pad2.top -= PADDLESPEED
-    if keyboard.m:
+    if keyboard.m and pad2.bottom < HEIGHT:
         pad2.top += PADDLESPEED
 
     #move the ball
@@ -112,8 +134,8 @@ def update():
         reset_ball = True
 
     if reset_ball:
-        ball.x_float = ball_old_x
-        ball.y_float = ball_old_y
+        ball.x_float = ball_old_x + ball.x_vel  # The second term prevents the ball from sticking to the paddle
+        ball.y_float = ball_old_y + ball.y_vel  # The second term prevents the ball from sticking to the paddle
         ball.x = int(round(ball.x_float))
         ball.y = int(round(ball.y_float))
             

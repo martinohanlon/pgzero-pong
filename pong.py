@@ -3,8 +3,9 @@ from math import sin, cos, radians
 from time import sleep
 
 #setup the constants
-WIDTH = 500
-HEIGHT = 300
+TITLE = "Pygame Zero Pong"
+WIDTH = 1000
+HEIGHT = 800
 BALLSPEED = 10
 PADDLESPEED = 5
 MAXBOUNCEANGLE = 75
@@ -21,11 +22,11 @@ def reset_game(angle):
     ball.y_vel = BALLSPEED * sin(radians(ball.angle))
 
     #position the paddles
-    pad1.pos = 10, HEIGHT / 2
-    pad2.pos = WIDTH - 10, HEIGHT / 2
+    pad1.pos = 30, HEIGHT / 2
+    pad2.pos = WIDTH - 30, HEIGHT / 2
 
 #create a rectangle of the playing area
-screenRect = Rect(10,0,WIDTH - 10,HEIGHT)
+screenRect = Rect(20, 60, WIDTH - 40, HEIGHT - 120)
 
 #create ball
 ball = Actor('ball')
@@ -42,6 +43,9 @@ goals = [0, 0]
 
 def draw():
     screen.clear()
+    screen.draw.filled_rect(Rect((20, 32),(WIDTH-40, 16)), (255,255,255))
+    screen.draw.filled_rect(Rect((20, HEIGHT-48),(WIDTH-40, 16)), (255,255,255))
+    screen.blit('middots', (500-8, 48))
     ball.draw()
     pad1.draw()
     pad2.draw()
@@ -61,7 +65,7 @@ def computer_move():
             pad1.y -= 3
 
 def update():
-	global gamemode
+    global gamemode
 
     #move the paddles
     if gamemode == 1:
@@ -69,14 +73,14 @@ def update():
         computer_move()
     if gamemode == 2:
     #in 2-player mode, let the player operate paddle 1
-        if keyboard.q and pad1.top > 0:
+        if keyboard.q and pad1.top > 48:
             pad1.top -= PADDLESPEED
-        if keyboard.a and pad1.bottom < HEIGHT:
+        if keyboard.a and pad1.bottom < HEIGHT-48:
             pad1.top += PADDLESPEED
     #in all modes, let the player operate paddle 2
-    if keyboard.k and pad2.top > 0:
+    if keyboard.k and pad2.top > 48:
         pad2.top -= PADDLESPEED
-    if keyboard.m and pad2.bottom < HEIGHT:
+    if keyboard.m and pad2.bottom < HEIGHT-48:
         pad2.top += PADDLESPEED
 
     #move the ball
@@ -92,10 +96,10 @@ def update():
     reset_ball = False
 
     #has the ball left the screen?  
-    if not screenRect.contains(ball):
+    if not screenRect.contains(ball._rect):
         
         #did it hit the top or bottom?
-        if ball.top < 0 or ball.bottom > HEIGHT:
+        if ball.top < 32 or ball.bottom > HEIGHT-32:
             ball.y_vel *= -1
             reset_ball = True
             

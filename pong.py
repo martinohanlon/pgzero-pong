@@ -7,8 +7,8 @@ TITLE = "Pygame Zero Pong"
 WIDTH = 1000
 HEIGHT = 800
 BALLSPEED = 10
-PADDLESPEED = 5
-MAXBOUNCEANGLE = 75
+PADDLESPEED = 8
+MAXBOUNCEANGLE = 54
 gamemode = 1
 hold = False
 
@@ -21,6 +21,8 @@ def reset_game(angle):
     ball.angle = angle
     ball.x_vel = BALLSPEED * cos(radians(ball.angle))
     ball.y_vel = BALLSPEED * sin(radians(ball.angle))
+    ball.speed = BALLSPEED
+    ball.strokes = 0
 
     #position the paddles
     pad1.pos = 30, HEIGHT / 2
@@ -61,15 +63,24 @@ def computer_move():
     if ball.x_vel >= 0:
     #If ball is moving away from paddle, center bat
         if pad1.y < (HEIGHT/2):
-            pad1.y += 2
+            pad1.y += 4
         elif pad1.y > (HEIGHT/2):
-            pad1.y -= 2
+            pad1.y -= 4
     #if ball is moving towards bat, track its movement.
     elif ball.x_vel < 0:
         if pad1.y < ball.y:
-            pad1.y += 3
+            pad1.y += 7
         else:
-            pad1.y -= 3
+            pad1.y -= 7
+
+def update_speed(ball):
+    # after 9 strokes, increase ball speed every 3 strokes
+    ball.strokes += 1
+    if ball.strokes > 8:
+        if ball.strokes % 3 == 0:
+            ball.speed += 1
+    ball.x_vel = ball.speed * cos(radians(ball.angle))
+    ball.y_vel = ball.speed * sin(radians(ball.angle))
 
 def update():
     global gamemode, hold
@@ -133,16 +144,14 @@ def update():
         bounce_angle = ((ball.y - pad1.y) / (pad1.height / 2)) * MAXBOUNCEANGLE
         ball.angle = max(0 - MAXBOUNCEANGLE, min(MAXBOUNCEANGLE, bounce_angle))
         #work out the ball velocity
-        ball.x_vel = BALLSPEED * cos(radians(ball.angle))
-        ball.y_vel = BALLSPEED * sin(radians(ball.angle))
+        update_speed(ball)
 
         reset_ball = True
 
     elif pad2.colliderect(ball):
         bounce_angle = 180 - (((ball.y - pad2.y) / (pad2.height / 2)) * MAXBOUNCEANGLE)
         ball.angle = max(180 - MAXBOUNCEANGLE, min(180 + MAXBOUNCEANGLE, bounce_angle))
-        ball.x_vel = BALLSPEED * cos(radians(ball.angle))
-        ball.y_vel = BALLSPEED * sin(radians(ball.angle))
+        update_speed(ball)
 
         reset_ball = True
 

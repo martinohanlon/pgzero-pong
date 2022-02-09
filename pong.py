@@ -1,3 +1,4 @@
+import pgzrun
 from math import sin, cos, radians
 from time import sleep
 
@@ -109,7 +110,7 @@ def update():
 
             elif ball.right > WIDTH - 10:
                 print("player 1 goal")
-                goals[1] += 1
+                goals[0] += 1
                 reset_game(0)
                 sleep(2)
                 print("Score {} : {}".format(goals[0], goals[1]))
@@ -139,3 +140,4 @@ def update():
         ball.x = int(round(ball.x_float))
         ball.y = int(round(ball.y_float))
             
+pgzrun.go()

@@ -10,9 +10,10 @@ BALLSPEED = 10
 PADDLESPEED = 5
 MAXBOUNCEANGLE = 75
 gamemode = 1
+hold = False
 
 def reset_game(angle):
-
+    global hold
     #setup ball properties
     ball.pos = WIDTH / 2, HEIGHT / 2
     ball.x_float = float(ball.x)
@@ -24,6 +25,9 @@ def reset_game(angle):
     #position the paddles
     pad1.pos = 30, HEIGHT / 2
     pad2.pos = WIDTH - 30, HEIGHT / 2
+
+    # Tells the game to pause in update()
+    hold = True
 
 #create a rectangle of the playing area
 screenRect = Rect(20, 60, WIDTH - 40, HEIGHT - 120)
@@ -46,7 +50,10 @@ def draw():
     screen.draw.filled_rect(Rect((20, 32),(WIDTH-40, 16)), (255,255,255))
     screen.draw.filled_rect(Rect((20, HEIGHT-48),(WIDTH-40, 16)), (255,255,255))
     screen.blit('middots', (500-8, 48))
-    ball.draw()
+    screen.draw.text(str(goals[0]), midtop=(250, 80), fontname="lcd", fontsize=72)
+    screen.draw.text(str(goals[1]), midtop=(750, 80), fontname="lcd", fontsize=72)
+    if not hold:
+        ball.draw()
     pad1.draw()
     pad2.draw()
 
@@ -65,8 +72,11 @@ def computer_move():
             pad1.y -= 3
 
 def update():
-    global gamemode
-
+    global gamemode, hold
+    # pause to let player(s) prepare
+    if hold:
+        sleep(2)
+        hold = False
     #move the paddles
     if gamemode == 1:
     #in 1-player mode, let the computer operate paddle 1
@@ -109,14 +119,12 @@ def update():
                 print("Player 2 goal")
                 goals[1] += 1
                 reset_game(180)
-                sleep(2)
                 print("Score {} : {}".format(goals[0], goals[1]))
 
             elif ball.right > WIDTH - 10:
                 print("player 1 goal")
                 goals[0] += 1
                 reset_game(0)
-                sleep(2)
                 print("Score {} : {}".format(goals[0], goals[1]))
     
     #has the ball hit a paddle

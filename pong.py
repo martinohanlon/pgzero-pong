@@ -9,7 +9,9 @@ HEIGHT = 800
 BALLSPEED = 10
 PADDLESPEED = 8
 MAXBOUNCEANGLE = 54
-gamemode = 1
+GAMELENGTH = 11
+gamemode = 0
+winner = " "
 hold = False
 
 def reset_game(angle):
@@ -51,6 +53,16 @@ def draw():
     screen.clear()
     screen.draw.filled_rect(Rect((20, 32),(WIDTH-40, 16)), (255,255,255))
     screen.draw.filled_rect(Rect((20, HEIGHT-48),(WIDTH-40, 16)), (255,255,255))
+    if gamemode == 0:
+        screen.draw.text("PONG", center=(WIDTH // 2, (HEIGHT // 2)-64), fontname="lcd", fontsize=128)
+        screen.draw.text("Press 1 for 1-player game\nPress 2 for 2-player game\n\nKeys: L-player - Q & A, R-player - K & M",
+                         midtop=(WIDTH // 2, 480), fontname="lcd", fontsize=36)
+        return
+    if gamemode == 3:
+        screen.draw.text(winner + " Wins", center=(WIDTH // 2, (HEIGHT // 2)-64), fontname="lcd", fontsize=100)
+        screen.draw.text("Press 1 for 1-player game\nPress 2 for 2-player game",
+                         midtop=(WIDTH // 2, 480), fontname="lcd", fontsize=36)
+        return
     screen.blit('middots', (500-8, 48))
     screen.draw.text(str(goals[0]), midtop=(250, 80), fontname="lcd", fontsize=72)
     screen.draw.text(str(goals[1]), midtop=(750, 80), fontname="lcd", fontsize=72)
@@ -83,11 +95,25 @@ def update_speed(ball):
     ball.y_vel = ball.speed * sin(radians(ball.angle))
 
 def update():
-    global gamemode, hold
+    global goals, gamemode, winner, hold
     # pause to let player(s) prepare
     if hold:
         sleep(2)
         hold = False
+    # handle game screens, mode 0 is startup screen, mode 3 is winner announcement screen
+    if gamemode == 0 or gamemode == 3:
+        if keyboard.K_1 or keyboard.KP_1:
+            gamemode = 1
+            #reset the game
+            reset_game(180)
+            #setup the goals
+            goals = [0, 0]
+        if keyboard.K_2 or keyboard.KP_2:
+            gamemode = 2
+            reset_game(180)
+            goals = [0, 0]
+        return
+
     #move the paddles
     if gamemode == 1:
     #in 1-player mode, let the computer operate paddle 1
@@ -131,13 +157,27 @@ def update():
                 goals[1] += 1
                 reset_game(180)
                 print("Score {} : {}".format(goals[0], goals[1]))
+                if goals[1] == GAMELENGTH:
+                    if gamemode == 1:
+                        winner = "Player"
+                    if gamemode == 2:
+                        winner = "Player 2"
+                    gamemode = 3
+                    return
 
             elif ball.right > WIDTH - 10:
                 print("player 1 goal")
                 goals[0] += 1
                 reset_game(0)
                 print("Score {} : {}".format(goals[0], goals[1]))
-    
+                if goals[0] == GAMELENGTH:
+                    if gamemode == 1:
+                        winner = "Computer"
+                    if gamemode == 2:
+                        winner = "Player 1"
+                    gamemode = 3
+                    return
+
     #has the ball hit a paddle
     if pad1.colliderect(ball):
         #work out the bounce angle

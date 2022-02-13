@@ -1,7 +1,7 @@
 # Pygame Zero - Pong
 
 A fork of a basic Pong game in Python/pygame zero written by Martin O'Hanlon (martin@ohanlonweb.com)
-[www.stuffaboutcode.com](http://www.stuffaboutcode.com) for the version this program is based on.
+[www.stuffaboutcode.com](http://www.stuffaboutcode.com). Thanks go to him for the version this program is based on.
 
 ![pong - gameplay](pong-ingamescreen.png)
 

@@ -1,23 +1,20 @@
 # Pygame Zero - Pong
-Martin O'Hanlon (martin@ohanlonweb.com)
-[www.stuffaboutcode.com](http://www.stuffaboutcode.com)
 
-![pong](pong.png)
+A fork of a basic Pong game in Python/pygame zero written by Martin O'Hanlon (martin@ohanlonweb.com)
+[www.stuffaboutcode.com](http://www.stuffaboutcode.com). Thanks go to him for the version this program is based on.
+
+![pong - gameplay](pong-ingamescreen.png)
 
 ## Description
-A unfinished pygame zero interpretation of Pong
 
-For more information see [www.stuffaboutcode.com/2015/09/pygame-zero-pong.html](http://www.stuffaboutcode.com/2015/09/pygame-zero-pong.html)
-
-## Install
-
-git clone https://github.com/martinohanlon/pgzero-pong
-
-This assumes you already have pygame zero installed. [pygame-zero.readthedocs.org/en/latest/installation.html](http://pygame-zero.readthedocs.org/en/latest/installation.html)
-
-## Run
-
-pgzrun pong.py
+After looking at Martin O'Hanlon's unfinished Pong interpretation I decided to try to complete it so it can actually be played.
+This fork now includes the following features:
+* 1-player mode with computer-controlled opponent
+* Start screen with 1 or 2-player mode selection
+![pong - start screen](pong-startscreen.png)
+* On-screen score display
+* Game win at 11 point
+![pong - end screen](pong-endscreen.png)
 
 ## Controls
 
